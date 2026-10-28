@@ -25,7 +25,6 @@ jobs:
           rm -rf temp_dir *.zip
         fi
 
-    # ITO ANG MAGIC: Gagamit tayo ng Bun imbes na npm
     - name: Setup Bun
       uses: oven-sh/setup-bun@v1
       with:
@@ -40,7 +39,6 @@ jobs:
     - name: Install and Sync Capacitor
       run: |
         bun add @capacitor/core @capacitor/cli @capacitor/android
-        bunx cap init "VOID.AI" "com.voidai.app" --web-dir=dist
         bunx cap add android
         bunx cap sync android
 
