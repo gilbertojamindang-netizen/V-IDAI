@@ -8,29 +8,31 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22' # Pinalitan para maayos yung npm error
+        node-version: '20'
 
-    - name: Clean install dependencies
+    - name: Fix project root
       run: |
-        rm -rf node_modules package-lock.json
-        npm install --legacy-peer-deps
+        # Kung ang package.json ay nasa loob ng isang sub-folder, ilipat natin sa root
+        if [ -f "VOIDAI/package.json" ]; then mv VOIDAI/* .; fi
+        if [ -f "void-ai-capacitor-android/package.json" ]; then mv void-ai-capacitor-android/* .; fi
+
+    - name: Install dependencies
+      run: npm install --legacy-peer-deps
 
     - name: Build Web App
       run: npm run build
 
-    - name: Install Capacitor Android
+    - name: Install and Sync Capacitor
       run: |
         npm install @capacitor/core @capacitor/cli @capacitor/android
-        npx cap init "VOID.AI" "com.voidai.app" --web-dir=dist || true
-        npx cap add android || true
+        npx cap init "VOID.AI" "com.voidai.app" --web-dir=dist
+        npx cap add android
         npx cap sync android
 
     - name: Setup Java
