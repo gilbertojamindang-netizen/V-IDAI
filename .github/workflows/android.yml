@@ -25,23 +25,24 @@ jobs:
           rm -rf temp_dir *.zip
         fi
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
+    # ITO ANG MAGIC: Gagamit tayo ng Bun imbes na npm
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
       with:
-        node-version: '20'
+        bun-version: latest
 
-    - name: Install dependencies with Force
-      run: npm install --force # ITO ANG MAGPIPILIT NA MA-INSTALL KAHIT MAG-AWAY SILA
+    - name: Install dependencies with Bun
+      run: bun install
 
     - name: Build Web App
-      run: npm run build || npm run build -- --emptyOutDir
+      run: bun run build
 
     - name: Install and Sync Capacitor
       run: |
-        npm install @capacitor/core @capacitor/cli @capacitor/android --force
-        npx cap init "VOID.AI" "com.voidai.app" --web-dir=dist
-        npx cap add android
-        npx cap sync android
+        bun add @capacitor/core @capacitor/cli @capacitor/android
+        bunx cap init "VOID.AI" "com.voidai.app" --web-dir=dist
+        bunx cap add android
+        bunx cap sync android
 
     - name: Setup Java
       uses: actions/setup-java@v4
