@@ -11,16 +11,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Unzip project
+      run: |
+        unzip *.zip -d project_temp
+        mv project_temp/*/* . || mv project_temp/* .
+        rm -rf project_temp *.zip
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-
-    - name: Fix project root
-      run: |
-        # Kung ang package.json ay nasa loob ng isang sub-folder, ilipat natin sa root
-        if [ -f "VOIDAI/package.json" ]; then mv VOIDAI/* .; fi
-        if [ -f "void-ai-capacitor-android/package.json" ]; then mv void-ai-capacitor-android/* .; fi
 
     - name: Install dependencies
       run: npm install --legacy-peer-deps
